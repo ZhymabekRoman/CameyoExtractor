@@ -1,43 +1,46 @@
 #NoTrayIcon
+Global $sScript_Content
+
 If $CmdLine[0] < 1 Then
-$CameyoFile = FileOpenDialog('Выберите файл', @DesktopDir, "Текстовые файлы (*.exe)", 1 + 2)
+$CameyoFile = FileOpenDialog('Please select file', @DesktopDir, "Cameyo Package (*.cameyo.exe)", 1 + 2)
 	If @Error Then Exit
 Else
 $CameyoFile = $CmdLine[1]
 EndIF
-Global Const $RandomTempFileName = _RandomText(10)
+
+
+$RandomTempFileName = _RandomText(10)
 $CameyoFileName = StringRegExpReplace ( $CameyoFile, "(^.*)\\(.*)\.(.*)$", "\2")
-;Local $sAutoIt_File = @TempDir & "\nsnAFB7.tmp\Script_TempFile.bat"
-$sAutoIt_File = @TempDir & $RandomTempFileName & '.bat'
-Local $sRunLine, $sScript_Content, $hFile
+$sAutoIt_File = @TempDir & "\CameyoExtractorTemp\" & $RandomTempFileName & ".bat"
 $sScript_Content &= 'set CAMEYO_BASEDIRNAME=%%ExeDir%%\' & FileGetShortName($CameyoFileName) & '' & @CRLF
 $sScript_Content &= '' & $CameyoFile & ' -ExtractAll' & @CRLF
-$hFile = FileOpen($sAutoIt_File, 2)
+
+$hFile = FileOpen($sAutoIt_File, 2 +8)
 FileWrite($hFile, $sScript_Content)
 FileClose($hFile)
-ShellExecute ( $sAutoIt_File,'','','',@SW_HIDE)
+ShellExecute($sAutoIt_File,'','','',@SW_HIDE)
 $sFileNameNoExt = StringRegExpReplace(StringRegExpReplace($CameyoFile, "^.*\\", ""), '\.[^.]*$', '')
-WinWait ( $sFileNameNoExt )
-If $CmdLine[0] < 1 Then
-Local $sTexts = WinGetText($sFileNameNoExt)
-WinClose($sFileNameNoExt )
+WinWait ($sFileNameNoExt)
+$sTexts = WinGetText($sFileNameNoExt)
+WinClose($sFileNameNoExt)
+
 ; Delete the temporary file.
-Local $iDelete = FileDelete($sAutoIt_File)
-; Display a message of whether the file was deleted.
+$iDelete = FileDelete($sAutoIt_File)
+
 If $iDelete Then
 $RegExpRep = StringRegExpReplace($sTexts, 'OK', ' ')
-MsgBox(0, $sFileNameNoExt, $RegExpRep )
 Else
-MsgBox(0, "", "Ertor")
-EndIf
-Else
-Local $sTexts = WinGetText($sFileNameNoExt)
-WinClose($sFileNameNoExt )
-FileDelete($sAutoIt_File)
-$RegExpRep = StringRegExpReplace($sTexts, 'OK', ' ')
-ConsoleWrite($RegExpRep)
-exit
+MsgBox(0, "Cameyo Extractor", "Error")
 EndIF
+
+If $CmdLine[0] < 1 Then
+;MsgBox(0, $sFileNameNoExt, $RegExpRep)
+MsgBox(0, "Cameyo Extractor", $RegExpRep)
+Else
+ConsoleWrite($RegExpRep)
+Exit
+EndIF
+
 Func _RandomText($length)
     Local $text = "", $temp
     For $i = 1 To $length
