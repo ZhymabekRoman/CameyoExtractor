@@ -1,0 +1,8 @@
+Ability to extract files from package to sandbox or host
+
+Sometimes a package needs certain files to be deployed manually to work, and this could be automated through Custom events. Some examples:
+appname.virtual.exe -Extract %Program Files%\AppID\config.ini (command line to deploy file to sandbox)
+%MyExe% -Extract %System%\driver.sys %WinDir%\system32 (Custom event command to deploy file to host; should request UAC prompt)
+appname.virtual.exe -Extract %System% (command line to deploy entire folder to sandbox)
+%MyExe% -RecursiveExtract %System% %WinDir%\system32 (Custom event command to deploy entire folder and subfolders to host; requires Administrator's rights)
+VirtApp.cameyo.exe -ExtractAll (This will extract all files into the app's data storage directory)
