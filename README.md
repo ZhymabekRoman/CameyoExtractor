@@ -6,7 +6,7 @@ Written on AutoIt script language (by the way, Universal Extractor is also writt
 
 ## How use
 
-CameyoExtractor.exe <full pathname to file>
+CameyoExtractor.exe full_pathname_to_file
 
 Example:CameyoExtractor.exe m:\AIMP.cameyo.exe
 
