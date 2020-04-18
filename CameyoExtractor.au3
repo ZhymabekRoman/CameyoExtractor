@@ -1,12 +1,8 @@
 #NoTrayIcon
 Global $sScript_Content
 
-If $CmdLine[0] < 1 Then
 $CameyoFile = FileOpenDialog('Please select file', @DesktopDir, "Cameyo Package (*.cameyo.exe)", 1 + 2)
-	If @Error Then Exit
-Else
-$CameyoFile = $CmdLine[1]
-EndIF
+If @Error Then Exit
 
 
 $RandomTempFileName = _RandomText(10)
@@ -33,13 +29,7 @@ Else
 MsgBox(0, "Cameyo Extractor", "Error")
 EndIF
 
-If $CmdLine[0] < 1 Then
-;MsgBox(0, $sFileNameNoExt, $RegExpRep)
 MsgBox(0, "Cameyo Extractor", $RegExpRep)
-Else
-ConsoleWrite($RegExpRep)
-Exit
-EndIF
 
 Func _RandomText($length)
     Local $text = "", $temp
