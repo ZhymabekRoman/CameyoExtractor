@@ -14,7 +14,9 @@ $sScript_Content &= '' & $CameyoFile & ' -ExtractAll' & @CRLF
 $hFile = FileOpen($sAutoIt_File, 2 +8)
 FileWrite($hFile, $sScript_Content)
 FileClose($hFile)
+
 ShellExecute($sAutoIt_File,'','','',@SW_HIDE)
+
 $sFileNameNoExt = StringRegExpReplace(StringRegExpReplace($CameyoFile, "^.*\\", ""), '\.[^.]*$', '')
 WinWait ($sFileNameNoExt)
 $sTexts = WinGetText($sFileNameNoExt)
