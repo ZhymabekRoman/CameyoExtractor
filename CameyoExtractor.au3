@@ -1,37 +1,22 @@
-#NoTrayIcon
-Global $sScript_Content
+Global $Script_Content
 
 $CameyoFile = FileOpenDialog('Please select file', @DesktopDir, "Cameyo Package (*.cameyo.exe)", 1 + 2)
 If @Error Then Exit
 
-
-$RandomTempFileName = _RandomText(10)
 $CameyoFileName = StringRegExpReplace ( $CameyoFile, "(^.*)\\(.*)\.(.*)$", "\2")
-$sAutoIt_File = @TempDir & "\CameyoExtractorTemp\" & $RandomTempFileName & ".bat"
-$sScript_Content &= 'set CAMEYO_BASEDIRNAME=%%ExeDir%%\' & FileGetShortName($CameyoFileName) & '' & @CRLF
-$sScript_Content &= '' & $CameyoFile & ' -ExtractAll' & @CRLF
 
-$hFile = FileOpen($sAutoIt_File, 2 +8)
-FileWrite($hFile, $sScript_Content)
+$Bat_File = @TempDir & "\CameyoExtractorTemp\" & _RandomText(10) & ".bat"
+$Script_Content &= 'set CAMEYO_BASEDIRNAME=%%ExeDir%%\' & FileGetShortName($CameyoFileName) & '' & @CRLF
+$Script_Content &= '' & $CameyoFile & ' -ExtractAll' & @CRLF
+
+$hFile = FileOpen($Bat_File, 2 + 8)
+FileWrite($hFile, $Script_Content)
 FileClose($hFile)
 
-ShellExecute($sAutoIt_File,'','','',@SW_HIDE)
-
-$sFileNameNoExt = StringRegExpReplace(StringRegExpReplace($CameyoFile, "^.*\\", ""), '\.[^.]*$', '')
-WinWait ($sFileNameNoExt)
-$sTexts = WinGetText($sFileNameNoExt)
-WinClose($sFileNameNoExt)
+ShellExecuteWait($Bat_File, '', '', '', @SW_HIDE)
 
 ; Delete the temporary file.
-$iDelete = FileDelete($sAutoIt_File)
-
-If $iDelete Then
-$RegExpRep = StringRegExpReplace($sTexts, 'OK', ' ')
-Else
-MsgBox(0, "Cameyo Extractor", "Error")
-EndIF
-
-MsgBox(0, "Cameyo Extractor", $RegExpRep)
+$iDelete = FileDelete($Bat_File)
 
 Func _RandomText($length)
     Local $text = "", $temp
@@ -40,5 +25,5 @@ Func _RandomText($length)
         $text&= Chr($temp+6*($temp>90)-7*($temp<65))
     Next
     Return $text
-EndFunc   ;==>_RandomText
+EndFunc
 
